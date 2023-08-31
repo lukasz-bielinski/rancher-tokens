@@ -4,7 +4,9 @@ go 1.21.0
 
 require (
 	github.com/hashicorp/vault/api v1.9.2
+	github.com/hashicorp/vault/api/auth/kubernetes v0.4.1
 	github.com/tidwall/gjson v1.16.0
+	golang.org/x/net v0.7.0
 )
 
 require (
@@ -25,7 +27,6 @@ require (
 	github.com/tidwall/match v1.1.1 // indirect
 	github.com/tidwall/pretty v1.2.0 // indirect
 	golang.org/x/crypto v0.6.0 // indirect
-	golang.org/x/net v0.7.0 // indirect
 	golang.org/x/text v0.7.0 // indirect
 	golang.org/x/time v0.0.0-20200416051211-89c76fbcd5d1 // indirect
 )

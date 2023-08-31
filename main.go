@@ -9,9 +9,9 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"rancher-tokens/vaultlogic"
 	"time"
 
-	vault "github.com/hashicorp/vault/api"
 	"github.com/tidwall/gjson"
 )
 
@@ -21,7 +21,6 @@ func logJSON(message string) {
 	if err != nil {
 		log.Fatalf("Could not marshal log message: %v", err)
 	}
-
 	log.Println(string(messageJSON))
 }
 
@@ -122,28 +121,15 @@ func main() {
 		return
 	}
 
-	// Write API Key to HashiCorp Vault
-	vaultConfig := &vault.Config{
-		Address: "http://vault.server.address:8200", // replace with your Vault server address
-	}
-
-	vaultClient, err := vault.NewClient(vaultConfig)
-	if err != nil {
-		log.Fatal("Could not create Vault client:", err)
-	}
-
-	// You'll need to set this token to one that has the necessary permissions
-	vaultClient.SetToken("your-vault-token")
-
 	data := map[string]interface{}{
 		"rancher2_access_key": API_KEY_NAME,
 		"rancher2_secret_key": API_KEY_TOKEN,
 	}
 
-	_, err = vaultClient.Logical().Write("secret/data/rancher_credentials", map[string]interface{}{"data": data})
+	_, err = vaultlogic.GetSecretWithKubernetesAuth(data)
 	if err != nil {
-		log.Fatal("Could not write data to Vault:", err)
+		logJSON(fmt.Sprintf("Failed to get or set secret: %s", err))
+		return
 	}
 
-	fmt.Println("Credentials written to Vault.")
 }
