@@ -1,7 +1,7 @@
 Documentation for Rancher Token Management Service    
 Overview    
 
-This service is designed to automate the management of Rancher API tokens by interacting with the Rancher Server. It resets the Rancher password, logs in to the Rancher Server, creates a new API key, and finally stores the API key details in a Vault.
+This service is designed to automate the management of Rancher API tokens by interacting with the Rancher Server. It resets the Rancher password, logs in to the Rancher Server, creates a new API key, and finally stores the API key details in a Vault.    
 Dependencies    
 
     Rancher API
@@ -14,6 +14,9 @@ Environment Variables
     RANCHER_SERVER: The URL of the Rancher Server.
     USERNAME: The username used for logging in to Rancher.
     SKIP_TLS_VERIFY: If set to "true", the client will skip TLS verification (not recommended for production).
+    VAULT_ADDR: Vault address    
+    VAULT_SECRET_ENGINE: Vault engine e.g. kv-v2    
+    VAULT_SECRET_PATH: Vault secret path e.g. credentials
 
 Packages    
 Main Package    
