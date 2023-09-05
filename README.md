@@ -58,7 +58,7 @@ How to Run
 
     Ensure that all environment variables are set.
     Build the project: make build-push    
-    Install on Kubernetes cluster(set proper ENV variables!):    
+    Install on Kubernetes cluster:    
       kubectl apply -f -R deploy/
 
 Note    
