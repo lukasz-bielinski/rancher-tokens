@@ -17,6 +17,7 @@ Environment Variables
     VAULT_ADDR: Vault address    
     VAULT_SECRET_ENGINE: Vault engine e.g. kv-v2    
     VAULT_SECRET_PATH: Vault secret path e.g. credentials
+    TOKEN_TTL: TTL of the token in Rancher    
 
 Packages    
 Main Package    

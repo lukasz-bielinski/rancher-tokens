@@ -11,6 +11,7 @@ import (
 	"os"
 	rancher_password_reset "rancher-tokens/rancher-password-reset"
 	"rancher-tokens/vaultlogic"
+	"strconv"
 	"time"
 
 	"github.com/tidwall/gjson"
@@ -30,6 +31,17 @@ func main() {
 	USERNAME := os.Getenv("USERNAME")
 	if USERNAME == "" {
 		USERNAME = "admin"
+	}
+
+	TOKEN_TTL := os.Getenv("TOKEN_TTL")
+	if TOKEN_TTL == "" {
+		TOKEN_TTL = "43200000"
+	}
+
+	TOKEN_TTL_INT, err := strconv.Atoi(TOKEN_TTL)
+	if err != nil {
+		// Handle the error
+		log.Fatal("Invalid TOKEN_TTL value")
 	}
 
 	currentTime := time.Now().UTC().Format(time.RFC3339)
@@ -99,7 +111,7 @@ func main() {
 	req, err = http.NewRequest(
 		"POST",
 		fmt.Sprintf("https://%s/v3/tokens", RANCHER_SERVER),
-		bytes.NewBuffer([]byte(fmt.Sprintf(`{"type":"token", "description":"%s"}`, API_KEY_DESCRIPTION))),
+		bytes.NewBuffer([]byte(fmt.Sprintf(`{"type":"token", "description":"%s", "ttl": %d}`, API_KEY_DESCRIPTION, TOKEN_TTL_INT))),
 	)
 	if err != nil {
 		logJSON(fmt.Sprintf("API key request creation failed: %s", err))
