@@ -38,9 +38,20 @@ func GetSecretWithKubernetesAuth(dataToStore map[string]interface{}) (string, er
 		return "", logAndReturnError("VAULT_ADDR not set", nil)
 	}
 
+	secretEngine := os.Getenv("VAULT_SECRET_ENGINE")
+	if secretEngine == "" {
+		secretEngine = "kv-v2"
+	}
+
+	secretPath := os.Getenv("VAULT_SECRET_PATH")
+	if secretPath == "" {
+		secretPath = "creds"
+	}
+
 	config := &vault.Config{
 		Address: "http://" + VAULT_ADDR + ":8200",
 	}
+
 	client, err := vault.NewClient(config)
 	if err != nil {
 		return "", logAndReturnError("Unable to initialize Vault client", err)
@@ -62,8 +73,8 @@ func GetSecretWithKubernetesAuth(dataToStore map[string]interface{}) (string, er
 		return "", logAndReturnError("No auth info was returned after login", nil)
 	}
 
-	kv := client.KVv2("kv-v2")
-	secret, err := kv.Get(context.Background(), "creds")
+	kv := client.KVv2(secretEngine)
+	secret, err := kv.Get(context.Background(), secretPath)
 
 	if err != nil {
 		if strings.Contains(err.Error(), "not found") {
@@ -85,7 +96,7 @@ func GetSecretWithKubernetesAuth(dataToStore map[string]interface{}) (string, er
 	}
 	logJSON("Successfully updated existing secret")
 
-	value, ok := secret.Data["password"].(string)
+	value, ok := secret.Data["rancher2_access_key"].(string)
 	if !ok {
 		return "", logAndReturnError("Value type assertion failed", nil)
 	}

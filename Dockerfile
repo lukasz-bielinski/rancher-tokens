@@ -28,6 +28,11 @@ FROM alpine:latest
 #    && rm -rf /tmp/* \
 #    && rm -rf /var/cache/apk/*
 
+RUN apk add --no-cache ca-certificates curl  && \
+    curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl && \
+    chmod +x kubectl && \
+    mv kubectl /usr/local/bin/
+
 # Copy binary and bash scripts
 COPY --from=builder /app/rancher-tokens /app/rancher-tokens
 

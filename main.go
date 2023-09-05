@@ -9,6 +9,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	rancher_password_reset "rancher-tokens/rancher-password-reset"
 	"rancher-tokens/vaultlogic"
 	"time"
 
@@ -27,15 +28,22 @@ func logJSON(message string) {
 func main() {
 	RANCHER_SERVER := os.Getenv("RANCHER_SERVER")
 	USERNAME := os.Getenv("USERNAME")
-	PASSWORD := os.Getenv("PASSWORD")
+	if USERNAME == "" {
+		USERNAME = "admin"
+	}
 
 	currentTime := time.Now().UTC().Format(time.RFC3339)
-	API_KEY_DESCRIPTION := fmt.Sprintf("Token created at %s with cronjob rancher-tokens", currentTime)
+	API_KEY_DESCRIPTION := fmt.Sprintf("Token created at %s with cronjob rancher-token", currentTime)
 
-	if RANCHER_SERVER == "" || USERNAME == "" || PASSWORD == "" {
-		logJSON("Environment variables are not set.")
+	// Get newly reset password
+	newPassword, err := rancher_password_reset.ResetRancherPassword()
+	if err != nil {
+		logJSON(fmt.Sprintf("Resetting Rancher password failed: %s", err))
 		return
 	}
+
+	// Use newPassword where PASSWORD was used
+	PASSWORD := newPassword
 
 	var client *http.Client
 	if os.Getenv("SKIP_TLS_VERIFY") == "true" {
