@@ -2,6 +2,11 @@ Documentation for Rancher Token Management Service
 Overview    
 
 This service is designed to automate the management of Rancher API tokens by interacting with the Rancher Server. It resets the Rancher password, logs in to the Rancher Server, creates a new API key, and finally stores the API key details in a Vault.    
+## Architecture
+
+![diagram.png](diagram.png)
+
+
 Dependencies    
 
     Rancher API
